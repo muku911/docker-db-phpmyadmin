@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  mariadb:
+    image: mariadb:10.11.2
+    container_name: mariadb
+    networks:
+      - kumadev
+    restart: unless-stopped
+    volumes:
+      - ./mariadb-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MARIADB_ROOT_PASSWORD=010203
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    networks:
+      - kumadev
+    restart: unless-stopped
+    # link: mariadb
+    ports:
+      - 8080:80
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - UPLOAD_LIMIT=128M
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=010203
+
+
+networks:
+  kumadev:
+    external: true
